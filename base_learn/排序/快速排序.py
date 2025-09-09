@@ -21,4 +21,5 @@ def quick_sort(arr, left , right):
 
 if __name__ == '__main__':
     arr = [5, 4, 3, 2, 1]
-    print("快速排序结果：", quick_sort(arr, 0, len(arr)-1))
+    quick_sort(arr, 0, len(arr) - 1)
+    print("快速排序结果：", arr)
