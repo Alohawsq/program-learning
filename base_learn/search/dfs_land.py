@@ -38,7 +38,35 @@ def num_islands_dfs(grid):
     return count
 
 def all_area_island_dfs(grid):
-    ...
+    # 计算行数和列数
+    rows = len(grid)
+    cols = len(grid[0]) if rows else 0
+    # 设置标记数组
+    visited = [[False for _ in range(cols)] for _ in range(rows)]
+    # 设置移动方向
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+    areas = []
+    def dfs(x, y):
+        nonlocal area
+        # 结束条件
+        if x < 0 or x >= rows or y < 0 or y >= cols or grid[x][y] == '0' or visited[x][y]:
+            return
+        visited[x][y] = True
+        area += 1
+
+        for dx, dy in directions:
+            nx, ny = dx + x, dy + y
+            dfs(nx, ny)
+
+    # 循环单元格
+    for i in range(rows):
+        for j in range(cols):
+            area = 0
+            if grid[i][j] == '1' and not visited[i][j]:
+                dfs(i, j)
+            areas.append(area) if area else None
+    print(areas)
+    return max(areas) if areas else 0
 
 if __name__ == "__main__":
     # 示例网格
