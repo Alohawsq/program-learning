@@ -38,8 +38,34 @@ def num_islands_bfs(grid):
     return count
 
 def all_area_island_bfs(grid):
-    ...
-
+    # 计算行数和列数
+    rows = len(grid)
+    cols = len(grid[0]) if rows else 0
+    # 添加visited数组
+    visited = [[False for _ in range(cols)] for _ in range(rows)]
+    # 定义移动方向
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+    # 定义队列
+    queue = deque()
+    areas = []
+    for i in range(rows):
+        for j in range(cols):
+            area = 0
+            if grid[i][j] == '1' and not visited[i][j]:
+                queue.append((i, j))
+                area += 1
+                while queue:
+                    x, y = queue.popleft()
+                    visited[x][y] = True
+                    for dx, dy in directions:
+                        nx, ny = dx + x, dy + y
+                        if 0 <= nx < rows and 0 <= ny < cols and not visited[nx][ny] and grid[nx][ny] == '1':
+                            queue.append((nx, ny))
+                            visited[nx][ny] = True
+                            area += 1
+            areas.append(area) if area else None
+    print(areas)
+    return max(areas)
 
 
 if __name__ == "__main__":
