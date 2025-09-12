@@ -54,10 +54,37 @@ def quick_sort(arr, left, right):
     quick_sort(arr, left, j - 1)
     quick_sort(arr, j + 1, right)
 
+
+
+def maximalSquare(matrix) -> int:
+    rows = len(matrix)
+    if not rows:
+        return 0
+    cols = len(matrix[0]) if rows else 0
+    sides = [[0 for j in range(cols)] for i in range(rows)]
+    max_side = 0
+    for i in range(rows):
+        for j in range(cols):
+            if matrix[i][j] == '1':
+                if i == 0 or j == 0:
+                    side = int(matrix[i][j])
+                else:
+                    side = min(int(sides[i - 1][j]), int(sides[i][j - 1]), int(sides[i - 1][j - 1])) + 1
+                sides[i][j] = side
+                if side > max_side:
+                    max_side = side
+    print(max_side)
+    return max_side * max_side
+
+
 if __name__ == '__main__':
-    print("冒泡排序结果：", bucket_sort([5, 2, 3, 1.1, 4, 5.1, 1]))
-    print("桶排序结果：", bucket_sort([5.2, 2, 3, 1.1, 4, 5.1, 1]))
-    arr = [5.2, 2, 3, 1.1, 4, 5.1, 1]
-    quick_sort(arr, 0, len(arr)-1)
-    print("快速排序结果：", arr)
+    # print("冒泡排序结果：", bucket_sort([5, 2, 3, 1.1, 4, 5.1, 1]))
+    # print("桶排序结果：", bucket_sort([5.2, 2, 3, 1.1, 4, 5.1, 1]))
+    # arr = [5.2, 2, 3, 1.1, 4, 5.1, 1]
+    # quick_sort(arr, 0, len(arr)-1)
+    # print("快速排序结果：", arr)
+
+    matrix = [["1", "1", "1", "1", "0"], ["1", "1", "1", "1", "0"], ["1", "1", "1", "1", "1"], ["1", "1", "1", "1", "1"],
+     ["0", "0", "1", "1", "1"]]
+    maximalSquare(matrix)
 
