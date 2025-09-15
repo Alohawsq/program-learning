@@ -28,7 +28,8 @@ def quick_sort(arr, left, right):
             j -= 1
         while arr[i] <= pivot and i < j:
             i += 1
-        arr[i], arr[j] = arr[j], arr[i]
+        if i < j:
+            arr[i], arr[j] = arr[j], arr[i]
     arr[left], arr[i] = arr[j], pivot
     quick_sort(arr, left, i-1)
     quick_sort(arr, i+1, right)
