@@ -31,6 +31,7 @@ class NumberContainers:
             return -1
 
         heap = self.num_to_heap[number]
+        # 当堆顶元素与index_to_num中获取到的值不相等时，推出堆顶元素
         while heap and self.index_to_num.get(heap[0]) != number:
             heapq.heappop(heap)
 
