@@ -10,58 +10,43 @@ int execTop() 执行所有用户的任务中优先级 最高 的任务，如果�
 同时请你返回这个任务所属的用户 userId 。如果不存在任何任务，返回 -1 。
 注意 ，一个用户可能被安排多个任务。
 """
+import heapq
 from typing import List
 
 class TaskManager:
 
     def __init__(self, tasks: List[List[int]]):
-        self.priority_to_taskId = {}
-        self.taskId_info = {}
+        self.heap = []
+        self.task_dict = {}
         for task in tasks:
-            if task[2] not in self.priority_to_taskId:
-                self.priority_to_taskId[task[2]] = [task[1]]
-            else:
-                self.priority_to_taskId[task[2]].append(task[1])
-            # 记录task_id与userId和priority的关系
-            self.taskId_info[task[1]] = [task[0], task[2]]
+            userId, taskId, priority = task
+            self.task_dict[taskId] = (userId, priority)
+            heapq.heappush(self.heap, (-priority, -taskId, taskId))
     def add(self, userId: int, taskId: int, priority: int) -> None:
-        self.taskId_info[taskId] = [userId, priority]
-        if priority not in self.priority_to_taskId:
-            self.priority_to_taskId[priority] = [taskId]
-        else:
-            self.priority_to_taskId[priority].append(taskId)
+        self.task_dict[taskId] = (userId, priority)
+        heapq.heappush(self.heap, (-priority, -taskId, taskId))
 
     def edit(self, taskId: int, newPriority: int) -> None:
-        last_priority = self.taskId_info[taskId][1]
-        self.taskId_info[taskId][1] = newPriority
-        self.priority_to_taskId[last_priority].remove(taskId)
-        if not self.priority_to_taskId[last_priority]:
-            del self.priority_to_taskId[last_priority]
-        if newPriority not in self.priority_to_taskId:
-            self.priority_to_taskId[newPriority] = [taskId]
-        else:
-            self.priority_to_taskId[newPriority].append(taskId)
+        userId, _ = self.task_dict[taskId]
+        self.task_dict[taskId] = (userId, newPriority)
+        heapq.heappush(self.heap, (-newPriority, -taskId, taskId))
 
     def rmv(self, taskId: int) -> None:
-        last_priority = self.taskId_info[taskId][1]
-        del self.taskId_info[taskId]
-        self.priority_to_taskId[last_priority].remove(taskId)
-        if not self.priority_to_taskId[last_priority]:
-            del self.priority_to_taskId[last_priority]
+        if taskId in self.task_dict:
+            del self.task_dict[taskId]
 
     def execTop(self) -> int:
-        if not self.priority_to_taskId:
-            return -1
-        max_priority = max(list(self.priority_to_taskId.keys()))
-        print(self.priority_to_taskId)
-        max_task_id = max(self.priority_to_taskId[max_priority])
-        userId = self.taskId_info[max_task_id][0]
-        del self.taskId_info[max_task_id]
-        self.priority_to_taskId[max_priority].remove(max_task_id)
-        if not self.priority_to_taskId[max_priority]:
-            del self.priority_to_taskId[max_priority]
-        return userId
-
+        while self.heap:
+            neg_pri, neg_tid, taskId = heapq.heappop(self.heap)
+            if taskId not in self.task_dict:
+                continue
+            current_priority = self.task_dict[taskId][1]
+            if current_priority != -neg_pri:
+                continue
+            userId = self.task_dict[taskId][0]
+            del self.task_dict[taskId]
+            return userId
+        return -1
 
 if __name__=='__main__':
     tasks = ["TaskManager", "add", "edit", "execTop", "rmv", "add", "execTop"]
